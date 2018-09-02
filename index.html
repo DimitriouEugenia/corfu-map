@@ -1,16 +1,142 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta charset="utf-8">
-    <title>Corfu Map Editor</title>
-    <link href="styles.css" title="compact" rel="stylesheet" type="text/css">
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD-CmjQQcI71kuW7qyZLCLTzOT1xl9jd20"></script>
-    <script src="editor.js"></script>
-  </head>
-  <body>
-    <textarea id="geojson-output" placeholder="See edits in GeoJson."></textarea>
-	<div id="map-holder"></div>
-	<a id="download-link" href="data:;base64," download="geojson.json"><button>Download GeoJson</button></a>
-  </body>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+        <title>Corfu Map App</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD-CmjQQcI71kuW7qyZLCLTzOT1xl9jd20"></script>
+        <!-- Geometry library used to calculate the distance of the path -->
+        <script src="http://maps.google.com/maps/api/js?libraries=geometry&sensor=true"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.4.0/firebase.js"></script>
+        <script src="editor.js"></script>
+
+<style>
+html, body {
+height: 100%;
+width: 100%;
+margin: 0;
+padding: 0;
+}
+
+body {
+font-family: "Arial", "Helvetica", sans-serif;
+color: #222;
+background-color: #222;
+font-size: 13px;
+-webkit-tap-highlight-color: rgba(0,0,0,0);
+overflow-y: auto;
+}
+
+/* Map styles. */
+#map-holder {
+height: 100%;
+width: 100%;
+}
+
+#geojson-output {
+width: 100%;
+-webkit-box-sizing: border-box; /* <=iOS4, <= Android  2.3 */
+-moz-box-sizing: border-box; /* FF1+ */
+box-sizing: border-box; /* Chrome, IE8, Opera, Safari 5.1*/
+border: none;
+resize: none;
+background-color: #F1F1F1;
+display: none;
+}
+.sidenav {
+    height: 100%; /* 100% Full-height */
+    width: 0; /* 0 width - change this with JavaScript */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Stay on top */
+    top: 0; /* Stay at the top */
+    left: 0;
+    background-color: #111; /* Black*/
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 60px; /* Place content 60px from the top */
+    transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+}
+
+/* The navigation menu links */
+.sidenav a,.sidenav input {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 13px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+/* Position and style the close button (top right corner) */
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+#main {
+  height: 100vh;
+  transition: margin-left .5s;
+  /* margin-top: 10px; */
+}
+
+.burger{
+    width: 35px;
+    height: 5px;
+    background-color: white;
+    margin: 6px 0;
+}
+
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+@media screen and (max-width: 768px){
+    *{
+        font-size: 12px;
+    }
+}
+  
+  
+        
+</style>
+    </head>
+    <body>
+        
+        <!-- <script type="text/javascript" src="cordova.js"></script> -->
+        <textarea id="geojson-output" placeholder="See edits in GeoJson."></textarea>
+        <div id='mySideNav' class='sidenav'>
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <a id="download-link" href="data:;base64," download="geojson.json"><button>Download GeoJson</button></a>
+            <input id="geojson_button"  type="button" value="Show GeoJson output">
+            <input id="delete_all_button"  type="button" value="Delete all">
+            <input id="delete_selected_button"  type="button" value="Delete selected">
+            <form autocomplete="off">
+                <input autocomplete="false" name="hidden" type="text" style="display:none;">
+                <input type="text" placeholder="Name" id='userName'>
+                <input type="button" value="Log In" onClick='logIn()'>
+            </form>
+        </div>
+
+        <div onclick="openNav()">
+            <div class="burger"></div>
+            <div class="burger"></div>
+            <div class="burger"></div>
+        </div>
+
+        <div id='main'>
+            <div id="map-holder"></div>
+        </div>
+    </body>
 </html>
