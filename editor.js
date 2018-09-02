@@ -21,7 +21,7 @@ var geoJsonFeatures = new Array();
 
 
 
-$.getJSON('../data/2015058_review.geojson.json',function(json){
+$.getJSON('data/2015058_review.geojson.json',function(json){
   database.ref('Features').remove()
   json.features.forEach(element => {
       features.push(element)
@@ -134,7 +134,7 @@ function init() {
     pathRating(path);
   })
 
-  map.data.loadGeoJson("../data/2015058_review.geojson.json");
+  map.data.loadGeoJson("data/2015058_review.geojson.json");
 
 }
 
